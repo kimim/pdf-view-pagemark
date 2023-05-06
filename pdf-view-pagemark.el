@@ -1,0 +1,100 @@
+;;; pdf-view-pagemark.el --- Add indicator in pdfview mode to show the page remaining -*- lexical-binding: t; -*-
+
+;; Copyright (c) 2023 Kimi Ma <kimi.im@outlook.com>
+
+;; Author:  Kimi Ma <kimi.im@outlook.com>
+;; URL: https://github.com/kimim/pdf-view-pagemark
+;; Package-Version:
+;; Package-Commit:
+;; Keywords: pdf reading experience
+;; Version: 0.1
+;; Package-Requires: ((pdf-tools "0.90") (emacs "26.0"))
+
+;; This file is NOT part of GNU Emacs.
+
+;;; License:
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;; Because Emacs cannot show continuous pages at the same time, it is
+;; difficult to keep track of the remaining text in current page, this
+;; minor mode add a posframe indicator to tell you the line from
+;; scroll up.
+;;
+;; To enable, add the following:
+;;   (add-hook 'pdf-view-mode-hook 'pdf-view-pagemark-mode)
+
+;;; Code:
+
+(require 'pdf-view)
+(require 'posframe)
+
+(defcustom pdf-view-pagemark-posframe-name "*pdf-view-pagemark*"
+  "Buffer name to show pagemark"
+  :group 'pdf-view
+  :type 'string)
+
+(defcustom pdf-view-pagemark-posframe-duration 10
+  "Seconds to show pagemark"
+  :group 'pdf-view
+  :type 'number)
+
+;;;###autoload
+(define-minor-mode pdf-view-pagemark-mode
+  "Automatically show pagemark indicator"
+  :global nil
+  (if (not pdf-view-pagemark-mode)
+      (advice-remove 'image-scroll-up 'pdf-view-pagemark-indicate)
+    (pdf-view-pagemark)))
+
+(defun pdf-view-pagemark ()
+  "Enable pagemark"
+  (when (derived-mode-p 'pdf-view-mode)
+    ;; This buffer is in pdf-view-mode
+    (advice-add 'image-scroll-up :before 'pdf-view-pagemark-indicate)))
+
+(defun pdf-view-pagemark-image-height ()
+  (let ((image (image-get-display-property)))
+    (ceiling (cdr (image-display-size image t)))))
+
+(defun pdf-view-pagemark-win-height ()
+  (let ((edges (window-edges nil t t)))
+    (- (nth 3 edges) (nth 1 edges))))
+
+(defun pdf-view-pagemark-rem-height ()
+  (- (image-height) (window-vscroll nil t) (win-height)))
+
+(defun pdf-view-pagemark-position ()
+  (- (win-height)
+     (pdf-view-pagemark-rem-height)))
+
+(defun pdf-view-pagemark-indicate (&optional n)
+  (let ((rem-height (pdf-view-pagemark-rem-height)))
+    (if (and (< 0 rem-height)
+             (< rem-height (pdf-view-pagemark-win-height)))
+        (posframe-show pdf-view-pagemark-posframe-name
+                       :string "------>>>"
+                       :position `(100 . ,(pdf-view-pagemark-position)))
+      (posframe-hide pdf-view-pagemark-posframe-name)))
+  (async-start
+   (lambda ()
+     (sleep-for pdf-view-pagemark-posframe-duration))
+
+   (lambda (result)
+     (posframe-hide pdf-view-pagemark-posframe-name))))
+
+
+(provide 'pdf-view-pagemark)
+;;; pdf-view-pagemark.el ends here
