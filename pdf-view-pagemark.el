@@ -46,11 +46,6 @@
   :group 'pdf-view
   :type 'string)
 
-(defcustom pdf-view-pagemark-posframe-duration 10
-  "Seconds to show pagemark"
-  :group 'pdf-view
-  :type 'number)
-
 ;;;###autoload
 (define-minor-mode pdf-view-pagemark-mode
   "Automatically show pagemark indicator"
@@ -74,10 +69,11 @@
     (- (nth 3 edges) (nth 1 edges))))
 
 (defun pdf-view-pagemark-rem-height ()
-  (- (image-height) (window-vscroll nil t) (win-height)))
+  (- (pdf-view-pagemark-image-height) (window-vscroll nil t)
+     (pdf-view-pagemark-win-height)))
 
 (defun pdf-view-pagemark-position ()
-  (- (win-height)
+  (- (pdf-view-pagemark-win-height)
      (pdf-view-pagemark-rem-height)))
 
 (defun pdf-view-pagemark-indicate (&optional n)
@@ -90,7 +86,7 @@
       (posframe-hide pdf-view-pagemark-posframe-name)))
   (async-start
    (lambda ()
-     (sleep-for pdf-view-pagemark-posframe-duration))
+     (sleep-for 10))
 
    (lambda (result)
      (posframe-hide pdf-view-pagemark-posframe-name))))
