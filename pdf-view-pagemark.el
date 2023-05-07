@@ -69,9 +69,17 @@
   (let ((image (image-get-display-property)))
     (ceiling (cdr (image-display-size image t)))))
 
+(defun pdf-view-pagemark-image-width ()
+  (let ((image (image-get-display-property)))
+    (ceiling (car (image-display-size image t)))))
+
 (defun pdf-view-pagemark-win-height ()
   (let ((edges (window-edges nil t t)))
     (- (nth 3 edges) (nth 1 edges))))
+
+(defun pdf-view-pagemark-win-width ()
+  (let ((edges (window-edges nil t t)))
+    (- (nth 2 edges) (nth 0 edges))))
 
 (defun pdf-view-pagemark-rem-height ()
   (- (pdf-view-pagemark-image-height) (window-vscroll nil t)
@@ -82,12 +90,15 @@
      (pdf-view-pagemark-rem-height)))
 
 (defun pdf-view-pagemark-indicate (&optional n)
-  (let ((rem-height (pdf-view-pagemark-rem-height)))
+  (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
+                            (pdf-view-pagemark-image-width))
+                         2))
+         (rem-height (pdf-view-pagemark-rem-height)))
     (if (and (< 0 rem-height)
              (< rem-height (pdf-view-pagemark-win-height)))
         (posframe-show pdf-view-pagemark-posframe-name
                        :string "------>>>"
-                       :position `(100 . ,(pdf-view-pagemark-position))
+                       :position `(,left-indent . ,(pdf-view-pagemark-position))
                        :timeout pdf-view-pagemark-posframe-timeout)
       (posframe-hide pdf-view-pagemark-posframe-name))))
 
