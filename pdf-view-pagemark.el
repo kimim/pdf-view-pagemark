@@ -46,6 +46,11 @@
   :group 'pdf-view
   :type 'string)
 
+(defcustom pdf-view-pagemark-posframe-timeout 5
+  "Timeout to show pagemark"
+  :group 'pdf-view
+  :type 'integer)
+
 ;;;###autoload
 (define-minor-mode pdf-view-pagemark-mode
   "Automatically show pagemark indicator"
@@ -82,15 +87,9 @@
              (< rem-height (pdf-view-pagemark-win-height)))
         (posframe-show pdf-view-pagemark-posframe-name
                        :string "------>>>"
-                       :position `(100 . ,(pdf-view-pagemark-position)))
-      (posframe-hide pdf-view-pagemark-posframe-name)))
-  (async-start
-   (lambda ()
-     (sleep-for 10))
-
-   (lambda (result)
-     (posframe-hide pdf-view-pagemark-posframe-name))))
-
+                       :position `(100 . ,(pdf-view-pagemark-position))
+                       :timeout pdf-view-pagemark-posframe-timeout)
+      (posframe-hide pdf-view-pagemark-posframe-name))))
 
 (provide 'pdf-view-pagemark)
 ;;; pdf-view-pagemark.el ends here
