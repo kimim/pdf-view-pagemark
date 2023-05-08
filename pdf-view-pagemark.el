@@ -41,19 +41,29 @@
 (require 'pdf-view)
 (require 'posframe)
 
-(defcustom pdf-view-pagemark-posframe-name "*pdf-view-pagemark*"
-  "Buffer name to show pagemark"
+(defcustom pdf-view-pagemark-buffer "*pdf-view-pagemark*"
+  "Buffer name to show pagemark."
   :group 'pdf-view
   :type 'string)
 
-(defcustom pdf-view-pagemark-posframe-timeout 3
-  "Timeout to show pagemark"
+(defcustom pdf-view-pagemark-timeout 3
+  "Timeout to show pagemark."
   :group 'pdf-view
   :type 'integer)
 
+(defcustom pdf-view-pagemark-alpha 40
+  "Trasparency level of pagemark posframe."
+  :group 'pdf-view
+  :type 'integer)
+
+(defface pdf-view-pagemark-color
+  '((t (:inherit highlight)))
+  "Background color of pagemark posframe."
+  :group 'pdf-view)
+
 ;;;###autoload
 (define-minor-mode pdf-view-pagemark-mode
-  "Automatically show pagemark indicator"
+  "Automatically show pagemark indicator."
   :global nil
   (if (not pdf-view-pagemark-mode)
       (advice-remove 'image-scroll-up 'pdf-view-pagemark-indicate)
@@ -95,16 +105,19 @@
                             (pdf-view-pagemark-image-width))
                          2))
          (rem-height (pdf-view-pagemark-rem-height))
-         (n (/ (pdf-view-pagemark-image-width) (frame-char-width))))
+         (n (/ (pdf-view-pagemark-image-width) (frame-char-width)))
+         (bg (face-attribute 'pdf-view-pagemark-color :background nil t)))
     (if (and (< 0 rem-height)
              (< rem-height (pdf-view-pagemark-win-height)))
         (set-frame-parameter
-         (posframe-show pdf-view-pagemark-posframe-name
+         (posframe-show pdf-view-pagemark-buffer
                         :string (make-string n ?-)
+                        :foreground-color bg
+                        :background-color bg
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
-                        :timeout pdf-view-pagemark-posframe-timeout)
-         'alpha 40)
-      (posframe-hide pdf-view-pagemark-posframe-name))))
+                        :timeout pdf-view-pagemark-timeout)
+         'alpha pdf-view-pagemark-alpha)
+      (posframe-hide pdf-view-pagemark-buffer))))
 
 (provide 'pdf-view-pagemark)
 ;;; pdf-view-pagemark.el ends here
