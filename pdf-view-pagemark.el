@@ -4,8 +4,6 @@
 
 ;; Author:  Kimi Ma <kimi.im@outlook.com>
 ;; URL: https://github.com/kimim/pdf-view-pagemark
-;; Package-Version:
-;; Package-Commit:
 ;; Keywords: pdf reading experience
 ;; Version: 0.1
 ;; Package-Requires: ((pdf-tools "0.90") (emacs "26.0"))
