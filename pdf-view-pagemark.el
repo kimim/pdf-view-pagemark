@@ -87,7 +87,8 @@
 
 (defun pdf-view-pagemark-position ()
   (- (pdf-view-pagemark-win-height)
-     (pdf-view-pagemark-rem-height)))
+     (pdf-view-pagemark-rem-height)
+     10))
 
 (defun pdf-view-pagemark-indicate (&optional n)
   (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
