@@ -46,7 +46,7 @@
   :group 'pdf-view
   :type 'string)
 
-(defcustom pdf-view-pagemark-posframe-timeout 5
+(defcustom pdf-view-pagemark-posframe-timeout 3
   "Timeout to show pagemark"
   :group 'pdf-view
   :type 'integer)
@@ -93,13 +93,16 @@
   (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
                             (pdf-view-pagemark-image-width))
                          2))
-         (rem-height (pdf-view-pagemark-rem-height)))
+         (rem-height (pdf-view-pagemark-rem-height))
+         (n (/ (pdf-view-pagemark-image-width) (frame-char-width))))
     (if (and (< 0 rem-height)
              (< rem-height (pdf-view-pagemark-win-height)))
-        (posframe-show pdf-view-pagemark-posframe-name
-                       :string "------>>>"
-                       :position `(,left-indent . ,(pdf-view-pagemark-position))
-                       :timeout pdf-view-pagemark-posframe-timeout)
+        (set-frame-parameter
+         (posframe-show pdf-view-pagemark-posframe-name
+                        :string (make-string n ?-)
+                        :position `(,left-indent . ,(pdf-view-pagemark-position))
+                        :timeout pdf-view-pagemark-posframe-timeout)
+         'alpha 40)
       (posframe-hide pdf-view-pagemark-posframe-name))))
 
 (provide 'pdf-view-pagemark)
