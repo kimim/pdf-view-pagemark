@@ -9,7 +9,7 @@ Show an indicator of the remaining text in PDF page.
 ## Installation
 
 ```elisp
-(add-to-list 'load-path "<path-to-wraplish>")
+(add-to-list 'load-path "<path-to-pagemark>")
 
 (require 'pdf-view-pagemark)
 
