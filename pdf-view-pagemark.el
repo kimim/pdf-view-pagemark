@@ -6,7 +6,7 @@
 ;; URL: https://github.com/kimim/pdf-view-pagemark
 ;; Keywords: pdf reading experience
 ;; Version: 0.1
-;; Package-Requires: ((pdf-tools "0.90") (emacs "26.0"))
+;; Package-Requires: ((pdf-tools "0.90") (posframe "1.4.2") (emacs "26.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
