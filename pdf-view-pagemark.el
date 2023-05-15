@@ -1,10 +1,10 @@
-;;; pdf-view-pagemark.el --- Add indicator in pdfview mode to show the page remaining -*- lexical-binding: t; -*-
+;;; pdf-view-pagemark.el --- Add indicator in pdfview mode to show the page remaining
 
 ;; Copyright (c) 2023 Kimi Ma <kimi.im@outlook.com>
 
 ;; Author:  Kimi Ma <kimi.im@outlook.com>
 ;; URL: https://github.com/kimim/pdf-view-pagemark
-;; Keywords: pdf reading experience
+;; Keywords: multimedia convenience
 ;; Version: 0.1
 ;; Package-Requires: ((pdf-tools "0.90") (posframe "1.4.2") (emacs "26.0"))
 
@@ -74,44 +74,50 @@
     (advice-add 'image-scroll-up :before 'pdf-view-pagemark-indicate)))
 
 (defun pdf-view-pagemark-image-height ()
-  "Get image height."
+  "Get pdf height."
   (let ((image (image-get-display-property)))
     (ceiling (cdr (image-display-size image t)))))
 
 (defun pdf-view-pagemark-image-width ()
+  "Get pdf width."
   (let ((image (image-get-display-property)))
     (ceiling (car (image-display-size image t)))))
 
 (defun pdf-view-pagemark-win-height ()
+  "Get window height."
   (let ((edges (window-edges nil t t)))
     (- (nth 3 edges) (nth 1 edges))))
 
 (defun pdf-view-pagemark-win-width ()
+  "Get window width."
   (let ((edges (window-edges nil t t)))
     (- (nth 2 edges) (nth 0 edges))))
 
 (defun pdf-view-pagemark-rem-height ()
+  "Calculate remaining height of pdf page."
   (- (pdf-view-pagemark-image-height) (window-vscroll nil t)
      (pdf-view-pagemark-win-height)))
 
 (defun pdf-view-pagemark-position ()
+  "Calculate indicator position."
   (- (pdf-view-pagemark-win-height)
      (pdf-view-pagemark-rem-height)
      10))
 
 (defun pdf-view-pagemark-indicate (&optional n)
+  "Show indicator for remaining pdf page, `N' is not used."
   (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
                             (pdf-view-pagemark-image-width))
                          2))
          (rem-height (pdf-view-pagemark-rem-height))
-         (n (/ (pdf-view-pagemark-image-width) (frame-char-width)))
+         (len (/ (pdf-view-pagemark-image-width) (frame-char-width)))
          (bg (or (face-background 'pdf-view-pagemark-color)
                  (face-background 'highlight))))
     (if (and (< 0 rem-height)
              (< rem-height (pdf-view-pagemark-win-height)))
         (set-frame-parameter
          (posframe-show pdf-view-pagemark-buffer
-                        :string (make-string n ?-)
+                        :string (make-string len ?-)
                         :foreground-color bg
                         :background-color bg
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
