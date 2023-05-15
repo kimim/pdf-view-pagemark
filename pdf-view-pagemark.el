@@ -55,7 +55,7 @@
   :type 'integer)
 
 (defface pdf-view-pagemark-color
-  '((t (:inherit highlight)))
+  nil
   "Background color of pagemark posframe."
   :group 'pdf-view)
 
@@ -68,12 +68,13 @@
     (pdf-view-pagemark)))
 
 (defun pdf-view-pagemark ()
-  "Enable pagemark"
+  "Enable pagemark."
   (when (derived-mode-p 'pdf-view-mode)
     ;; This buffer is in pdf-view-mode
     (advice-add 'image-scroll-up :before 'pdf-view-pagemark-indicate)))
 
 (defun pdf-view-pagemark-image-height ()
+  "Get image height."
   (let ((image (image-get-display-property)))
     (ceiling (cdr (image-display-size image t)))))
 
@@ -104,7 +105,8 @@
                          2))
          (rem-height (pdf-view-pagemark-rem-height))
          (n (/ (pdf-view-pagemark-image-width) (frame-char-width)))
-         (bg (face-attribute 'pdf-view-pagemark-color :background nil t)))
+         (bg (or (face-background 'pdf-view-pagemark-color)
+                 (face-background 'highlight))))
     (if (and (< 0 rem-height)
              (< rem-height (pdf-view-pagemark-win-height)))
         (set-frame-parameter
