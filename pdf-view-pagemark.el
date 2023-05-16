@@ -123,7 +123,7 @@
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
                         :timeout pdf-view-pagemark-timeout)
          'alpha pdf-view-pagemark-alpha)
-      (posframe-hide pdf-view-pagemark-buffer))))
+      (posframe-delete pdf-view-pagemark-buffer))))
 
 (provide 'pdf-view-pagemark)
 ;;; pdf-view-pagemark.el ends here
