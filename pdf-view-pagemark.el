@@ -104,8 +104,8 @@
      (pdf-view-pagemark-rem-height)
      10))
 
-(defun pdf-view-pagemark-indicate (&optional n)
-  "Show indicator for remaining pdf page, `N' is not used."
+(defun pdf-view-pagemark-indicate (&optional _n)
+  "Show indicator for remaining pdf page."
   (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
                             (pdf-view-pagemark-image-width))
                          2))
