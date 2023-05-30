@@ -118,6 +118,7 @@
         (set-frame-parameter
          (posframe-show pdf-view-pagemark-buffer
                         :string (make-string len ?-)
+                        :poshandler 'posframe-poshandler-window-center
                         :foreground-color bg
                         :background-color bg
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
