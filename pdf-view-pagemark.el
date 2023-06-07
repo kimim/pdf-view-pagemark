@@ -101,8 +101,7 @@
 (defun pdf-view-pagemark-position ()
   "Calculate indicator position."
   (- (pdf-view-pagemark-win-height)
-     (pdf-view-pagemark-rem-height)
-     10))
+     (pdf-view-pagemark-rem-height)))
 
 (defun pdf-view-pagemark-indicate (&optional _n)
   "Show indicator for remaining pdf page."
@@ -118,7 +117,6 @@
         (set-frame-parameter
          (posframe-show pdf-view-pagemark-buffer
                         :string (make-string len ?-)
-                        :poshandler 'posframe-poshandler-window-center
                         :foreground-color bg
                         :background-color bg
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
