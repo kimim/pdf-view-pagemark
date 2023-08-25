@@ -111,8 +111,8 @@
   "Calculate pagemark left margin position, 0 if negative margin."
   (max 0
        (/ (- (pdf-view-pagemark-win-width)
-             (pdf-view-pagemark-image-width)))
-       2))
+             (pdf-view-pagemark-image-width))
+          2)))
 
 (defun pdf-view-pagemark-indicate (&optional _n)
   "Show indicator for remaining pdf page."
