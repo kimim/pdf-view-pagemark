@@ -103,13 +103,24 @@
   (- (pdf-view-pagemark-win-height)
      (pdf-view-pagemark-rem-height)))
 
+(defun pdf-view-pagemark-window-left-edge ()
+  "Calculate x position of left window edge."
+  (* (car (window-edges)) (frame-char-width)))
+
+(defun pdf-view-pagemark-left-margin ()
+  "Calculate pagemark left margin position, 0 if negative margin."
+  (max 0
+       (/ (- (pdf-view-pagemark-win-width)
+             (pdf-view-pagemark-image-width)))
+       2))
+
 (defun pdf-view-pagemark-indicate (&optional _n)
   "Show indicator for remaining pdf page."
-  (let* ((left-indent (/ (- (pdf-view-pagemark-win-width)
-                            (pdf-view-pagemark-image-width))
-                         2))
+  (let* ((left-indent (+ (pdf-view-pagemark-window-left-edge)
+                         (pdf-view-pagemark-left-margin)))
          (rem-height (pdf-view-pagemark-rem-height))
-         (len (/ (pdf-view-pagemark-image-width) (frame-char-width)))
+         (len (min (/ (pdf-view-pagemark-win-width) (frame-char-width))
+                   (/ (pdf-view-pagemark-image-width) (frame-char-width))))
          (bg (or (face-background 'pdf-view-pagemark-color)
                  (face-background 'highlight))))
     (if (and (< 0 rem-height)
