@@ -32,7 +32,10 @@
 ;; scroll up.
 ;;
 ;; To enable, add the following:
-;;   (add-hook 'pdf-view-mode-hook 'pdf-view-pagemark-mode)
+;;
+;;   (use-package pdf-view-pagemark
+;;     :custom (pdf-view-pagemark-timeout 2)
+;;     :hook (pdf-view-mode . pdf-view-pagemark-mode))
 
 ;;; Code:
 
