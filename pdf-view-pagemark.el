@@ -67,7 +67,9 @@
   "Automatically show pagemark indicator."
   :global nil
   (if (not pdf-view-pagemark-mode)
-      (advice-remove 'image-scroll-up 'pdf-view-pagemark-indicate)
+      (progn
+        (advice-remove 'image-scroll-up 'pdf-view-pagemark-indicate)
+        (posframe-delete pdf-view-pagemark-buffer))
     (pdf-view-pagemark)))
 
 (defun pdf-view-pagemark ()
@@ -136,7 +138,7 @@
                         :position `(,left-indent . ,(pdf-view-pagemark-position))
                         :timeout pdf-view-pagemark-timeout)
          'alpha pdf-view-pagemark-alpha)
-      (posframe-delete pdf-view-pagemark-buffer))))
+      (posframe-hide pdf-view-pagemark-buffer))))
 
 (provide 'pdf-view-pagemark)
 ;;; pdf-view-pagemark.el ends here
